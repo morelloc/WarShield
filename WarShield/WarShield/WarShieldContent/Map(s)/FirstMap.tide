@@ -2,6 +2,12 @@
 <Map Id="Untitled">
   <Description><![CDATA[]]></Description>
   <TileSheets>
+    <TileSheet Id="Decor">
+      <Description><![CDATA[]]></Description>
+      <ImageSource><![CDATA[..\Ground and Scenery\DecorTileSheet.png]]></ImageSource>
+      <Alignment SheetSize="6 x 3" TileSize="66 x 64" Margin="0 x 0" Spacing="0 x 0" />
+      <Properties />
+    </TileSheet>
     <TileSheet Id="untitled tile sheet">
       <Description><![CDATA[]]></Description>
       <ImageSource><![CDATA[..\Ground and Scenery\ground.png]]></ImageSource>
@@ -134,6 +140,105 @@
           <Static Index="30" BlendMode="Alpha" />
           <Static Index="55" BlendMode="Alpha" />
           <Static Index="55" BlendMode="Alpha" />
+        </Row>
+      </TileArray>
+      <Properties />
+    </Layer>
+    <Layer Id="Decor" Visible="True">
+      <Description><![CDATA[]]></Description>
+      <Dimensions LayerSize="100 x 25" TileSize="66 x 64" />
+      <TileArray>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="14" />
+          <TileSheet Ref="Decor" />
+          <Static Index="1" BlendMode="Alpha" />
+          <Null Count="85" />
+        </Row>
+        <Row>
+          <Null Count="14" />
+          <Static Index="0" BlendMode="Alpha" />
+          <Null Count="85" />
+        </Row>
+        <Row>
+          <Null Count="10" />
+          <Static Index="7" BlendMode="Alpha" />
+          <Static Index="13" BlendMode="Alpha" />
+          <Static Index="13" BlendMode="Alpha" />
+          <Static Index="13" BlendMode="Alpha" />
+          <Static Index="8" BlendMode="Alpha" />
+          <Null Count="85" />
+        </Row>
+        <Row>
+          <Null Count="10" />
+          <Static Index="0" BlendMode="Alpha" />
+          <Null Count="89" />
+        </Row>
+        <Row>
+          <Null Count="10" />
+          <Static Index="0" BlendMode="Alpha" />
+          <Null Count="89" />
+        </Row>
+        <Row>
+          <Null Count="10" />
+          <Static Index="0" BlendMode="Alpha" />
+          <Null Count="89" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
+        </Row>
+        <Row>
+          <Null Count="100" />
         </Row>
       </TileArray>
       <Properties />
