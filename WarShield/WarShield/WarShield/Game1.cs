@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using xTile;
+using xTile.Display;
+using xTile.Tiles;
 
 namespace WarShield
 {
@@ -17,11 +20,23 @@ namespace WarShield
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public SpriteBatch spriteBatch;
+        public Texture2D Spritesheet;
+        Map map;
+        IDisplayDevice xnaDisplayDevice;
+        xTile.Dimensions.Rectangle viewport;
+        private static Song menuMusic;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 1280;
+            graphics.ApplyChanges();
+            Window.AllowUserResizing = true;
+
+            IsMouseVisible = true;
+
             Content.RootDirectory = "Content";
         }
 
@@ -35,6 +50,9 @@ namespace WarShield
         {
             // TODO: Add your initialization logic here
 
+            xnaDisplayDevice = new xTile.Display.XnaDisplayDevice(Content, GraphicsDevice);
+            viewport = new xTile.Dimensions.Rectangle(new xTile.Dimensions.Size(this.Window.ClientBounds.Width, this.Window.ClientBounds.Height));
+
             base.Initialize();
         }
 
@@ -46,6 +64,11 @@ namespace WarShield
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            map = Content.Load<Map>("FirstMap");
+            map.LoadTileSheets(xnaDisplayDevice);
+
+          
 
             // TODO: use this.Content to load your game content here
         }
@@ -70,7 +93,19 @@ namespace WarShield
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            MouseState ms = Mouse.GetState();
+            int index = map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
+            Tile tile = map.GetLayer("untitled layer").Tiles[1, 1];
+           
+
+            Window.Title = index.ToString();
+
             // TODO: Add your update logic here
+            KeyboardState kb = Keyboard.GetState();
+            if (kb.IsKeyDown(Keys.Right))            
+            {
+                viewport.X += 3;
+            }
 
             base.Update(gameTime);
         }
@@ -85,7 +120,12 @@ namespace WarShield
 
             // TODO: Add your drawing code here
 
+            map.Draw(xnaDisplayDevice, viewport);
+
+            spriteBatch.Begin();
+
             base.Draw(gameTime);
+            spriteBatch.End();
         }
     }
 }
