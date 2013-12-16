@@ -31,7 +31,7 @@ namespace WarShield
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 1280;
+            graphics.PreferredBackBufferHeight = 896;
             graphics.ApplyChanges();
             Window.AllowUserResizing = true;
 
