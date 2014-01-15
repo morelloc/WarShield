@@ -45,15 +45,9 @@ namespace WarShield
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
+
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             xnaDisplayDevice = new xTile.Display.XnaDisplayDevice(Content, GraphicsDevice);
             viewport = new xTile.Dimensions.Rectangle(new xTile.Dimensions.Size(this.Window.ClientBounds.Width, this.Window.ClientBounds.Height));
@@ -63,13 +57,8 @@ namespace WarShield
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             map = Content.Load<Map>("BasicMap");
@@ -77,33 +66,21 @@ namespace WarShield
 
             enemySheet = Content.Load<Texture2D>("Enemies");
 
-            enemy = new Sprite(new Vector2(-150, 30), // Start at x=-150, y=30
+            enemy = new Sprite(Convert(298),
                                  enemySheet,
-                                 new Rectangle(164, 0, 163, 147), // Use this part of the superdog texture
-                                 new Vector2(60, 20));
-
-
-
-            // TODO: use this.Content to load your game content here
+                                 new Rectangle(0, 0, 64, 64),
+                                 new Vector2(0, 0));
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
+      
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+           
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
@@ -115,7 +92,6 @@ namespace WarShield
 
             Window.Title = index.ToString();
 
-            // TODO: Add your update logic here
             KeyboardState kb = Keyboard.GetState();
             if (kb.IsKeyDown(Keys.Right))
             {
@@ -125,27 +101,30 @@ namespace WarShield
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             map.Draw(xnaDisplayDevice, viewport);
 
-            spriteBatch.Begin();
+            enemy.Draw(spriteBatch);
+
 
             base.Draw(gameTime);
             spriteBatch.End();
         }
 
+
+
+
+        //Block and Coordinate Conversions
+
+
         public Vector2 Convert(int block)
         {
-            return new Vector2(((block % 20) * 64), ((block / 14) * 64));
+            return new Vector2(((block % 20) * 64), ((block / 20) * 64));
 
         }
 
