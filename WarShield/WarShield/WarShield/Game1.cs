@@ -26,6 +26,7 @@ namespace WarShield
         IDisplayDevice xnaDisplayDevice;
         xTile.Dimensions.Rectangle viewport;
         private static Song menuMusic;
+        MovementManager movementManager;
 
         //Enemy Variables
         Texture2D enemySheet;
@@ -51,7 +52,7 @@ namespace WarShield
 
             xnaDisplayDevice = new xTile.Display.XnaDisplayDevice(Content, GraphicsDevice);
             viewport = new xTile.Dimensions.Rectangle(new xTile.Dimensions.Size(this.Window.ClientBounds.Width, this.Window.ClientBounds.Height));
-
+            movementManager = new MovementManager();
             this.IsMouseVisible = true;
 
             base.Initialize();
@@ -89,6 +90,8 @@ namespace WarShield
             int index = Convert(new Vector2(ms.X, ms.Y));
             Tile tile = map.GetLayer("Level").Tiles[1, 1];
 
+            //check all pivot points for all enemies
+                //change rotationa and velocity if necessary
 
             Window.Title = index.ToString();
 
