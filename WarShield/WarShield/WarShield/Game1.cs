@@ -27,11 +27,16 @@ namespace WarShield
         xTile.Dimensions.Rectangle viewport;
         private static Song menuMusic;
 
+        //Enemy Variables
+        Texture2D enemySheet;
+        Sprite enemy;
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 896;
+            graphics.PreferredBackBufferHeight = 960;
             graphics.ApplyChanges();
             Window.AllowUserResizing = true;
 
@@ -53,6 +58,8 @@ namespace WarShield
             xnaDisplayDevice = new xTile.Display.XnaDisplayDevice(Content, GraphicsDevice);
             viewport = new xTile.Dimensions.Rectangle(new xTile.Dimensions.Size(this.Window.ClientBounds.Width, this.Window.ClientBounds.Height));
 
+            this.IsMouseVisible = true;
+
             base.Initialize();
         }
 
@@ -65,10 +72,17 @@ namespace WarShield
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            map = Content.Load<Map>("FirstMap");
+            map = Content.Load<Map>("BasicMap");
             map.LoadTileSheets(xnaDisplayDevice);
 
-          
+            enemySheet = Content.Load<Texture2D>("Enemies");
+
+            enemy = new Sprite(new Vector2(-150, 30), // Start at x=-150, y=30
+                                 enemySheet,
+                                 new Rectangle(164, 0, 163, 147), // Use this part of the superdog texture
+                                 new Vector2(60, 20));
+
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -94,15 +108,16 @@ namespace WarShield
                 this.Exit();
 
             MouseState ms = Mouse.GetState();
-            int index = map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
-            Tile tile = map.GetLayer("untitled layer").Tiles[1, 1];
-           
+            map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
+            int index = Convert(new Vector2(ms.X, ms.Y));
+            Tile tile = map.GetLayer("Level").Tiles[1, 1];
+
 
             Window.Title = index.ToString();
 
             // TODO: Add your update logic here
             KeyboardState kb = Keyboard.GetState();
-            if (kb.IsKeyDown(Keys.Right))            
+            if (kb.IsKeyDown(Keys.Right))
             {
                 viewport.X += 3;
             }
@@ -127,5 +142,22 @@ namespace WarShield
             base.Draw(gameTime);
             spriteBatch.End();
         }
+
+        public Vector2 Convert(int block)
+        {
+            return new Vector2(((block % 20) * 64), ((block / 14) * 64));
+
+        }
+
+        public int Convert(Vector2 coordinate)
+        {
+
+            int block = ((int)(coordinate.X / 64) + ((int)(coordinate.Y / 64) * 20));
+
+            return block;
+        }
+
+
+
     }
 }

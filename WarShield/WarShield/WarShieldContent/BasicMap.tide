@@ -2,9 +2,9 @@
 <Map Id="Untitled">
   <Description><![CDATA[]]></Description>
   <TileSheets>
-    <TileSheet Id="untitled tile sheet">
+    <TileSheet Id="Blocks">
       <Description><![CDATA[]]></Description>
-      <ImageSource><![CDATA[..\Ground and Scenery\Blocks.png]]></ImageSource>
+      <ImageSource><![CDATA[Ground and Scenery\Blocks.png]]></ImageSource>
       <Alignment SheetSize="19 x 9" TileSize="64 x 64" Margin="0 x 0" Spacing="0 x 0" />
       <Properties />
     </TileSheet>
@@ -15,7 +15,7 @@
       <Dimensions LayerSize="20 x 15" TileSize="64 x 64" />
       <TileArray>
         <Row>
-          <TileSheet Ref="untitled tile sheet" />
+          <TileSheet Ref="Blocks" />
           <Static Index="0" BlendMode="Alpha" />
           <Static Index="0" BlendMode="Alpha" />
           <Static Index="0" BlendMode="Alpha" />
