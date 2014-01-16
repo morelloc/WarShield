@@ -54,6 +54,28 @@ namespace WarShield
             protected Vector2 location = Vector2.Zero;
             protected Vector2 velocity = Vector2.Zero;
 
+
+            public enum Turn
+            {
+                 Right,
+                 Left,
+                 Null
+            }
+
+            public Dictionary<int, Turn> PivotPoints = new Dictionary<int, Turn>();
+        
+
+            
+
+
+            public enum Direction
+            {
+                Up, Down, Left, Right
+            }
+
+            public Direction direction = new Direction();
+          
+
             public Sprite(
                 Vector2 location,
                 Texture2D texture,
@@ -68,8 +90,32 @@ namespace WarShield
                 frameWidth = initialFrame.Width;
                 frameHeight = initialFrame.Height;
 
+                LoadPivotPoints();
                 tag = null;
+                direction = Direction.Up;
+            }
 
+            public void LoadPivotPoints()
+            {
+                /*string line;
+                using (StreamReader reader = new StreamReader("Movement Points.txt"))
+                {
+                
+                    line = reader.ReadLine();
+                }*/
+                PivotPoints.Add(238, Turn.Left);
+                PivotPoints.Add(236, Turn.Left);
+                PivotPoints.Add(276, Turn.Right);
+                PivotPoints.Add(261, Turn.Right);
+                PivotPoints.Add(221, Turn.Right);
+                PivotPoints.Add(234, Turn.Left);
+                PivotPoints.Add(154, Turn.Left);
+                PivotPoints.Add(141, Turn.Right);
+                PivotPoints.Add(101, Turn.Right);
+                PivotPoints.Add(116, Turn.Right);
+                PivotPoints.Add(156, Turn.Left);
+                PivotPoints.Add(158, Turn.Left);
+                PivotPoints.Add(38, Turn.Left);
             }
 
             public Vector2 Location

@@ -27,11 +27,16 @@ namespace WarShield
         xTile.Dimensions.Rectangle viewport;
         private static Song menuMusic;
         MovementManager movementManager;
+        TowerManager towerManager;
+
+        MouseState MouseState;
+        MouseState prevMouseState;
 
         //Enemy Variables
         Texture2D enemySheet;
+        Texture2D towerSheet;
         Sprite enemy;
-
+        
 
         public Game1()
         {
@@ -52,7 +57,10 @@ namespace WarShield
 
             xnaDisplayDevice = new xTile.Display.XnaDisplayDevice(Content, GraphicsDevice);
             viewport = new xTile.Dimensions.Rectangle(new xTile.Dimensions.Size(this.Window.ClientBounds.Width, this.Window.ClientBounds.Height));
+
             movementManager = new MovementManager();
+            towerManager = new TowerManager();
+
             this.IsMouseVisible = true;
 
             base.Initialize();
@@ -65,12 +73,14 @@ namespace WarShield
             map = Content.Load<Map>("BasicMap");
             map.LoadTileSheets(xnaDisplayDevice);
 
+
             enemySheet = Content.Load<Texture2D>("Enemies");
+            towerSheet = Content.Load<Texture2D>("Towers");
 
             enemy = new Sprite(Convert(298),
                                  enemySheet,
                                  new Rectangle(0, 0, 64, 64),
-                                 new Vector2(0, 0));
+                                 new Vector2(0, -50));
         }
 
       
@@ -101,6 +111,18 @@ namespace WarShield
                 viewport.X += 3;
             }
 
+            if (ms.LeftButton == ButtonState.Pressed)
+            {
+                towerManager.Towers.Add(new Sprite(Convert(Convert(new Vector2(ms.X,ms.Y /*+ 130*/))), towerSheet, new Rectangle (0, 0, 64, 64), new Vector2 (0, 0)));
+            }
+
+            enemy.Update(gameTime);
+
+
+            //movementManager.CheckDirection(ref enemy);
+
+          
+
             base.Update(gameTime);
         }
 
@@ -113,6 +135,11 @@ namespace WarShield
             map.Draw(xnaDisplayDevice, viewport);
 
             enemy.Draw(spriteBatch);
+
+            for (int i = 0; i < towerManager.Towers.Count; i++)
+            {
+                towerManager.Towers[i].Draw(spriteBatch);
+            }
 
 
             base.Draw(gameTime);
