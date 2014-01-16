@@ -8,7 +8,5 @@ namespace WarShield
     class TowerManager
     {
         public List<Sprite> Towers = new List<Sprite>();
-
-
     }
 }

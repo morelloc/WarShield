@@ -80,7 +80,7 @@ namespace WarShield
             enemy = new Sprite(Convert(298),
                                  enemySheet,
                                  new Rectangle(0, 0, 64, 64),
-                                 new Vector2(0, -50));
+                                 new Vector2(0, -64));
         }
 
       
@@ -96,9 +96,9 @@ namespace WarShield
                 this.Exit();
 
             MouseState ms = Mouse.GetState();
-            map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
-            int index = Convert(new Vector2(ms.X, ms.Y));
-            Tile tile = map.GetLayer("Level").Tiles[1, 1];
+            int index = map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
+            //int index = Convert(new Vector2(ms.X, ms.Y));
+
 
             //check all pivot points for all enemies
                 //change rotationa and velocity if necessary
@@ -111,17 +111,28 @@ namespace WarShield
                 viewport.X += 3;
             }
 
-            if (ms.LeftButton == ButtonState.Pressed)
+           
+            
+            //Add Towers
+
+
+            if (ms.LeftButton == ButtonState.Pressed && ms.X > 0 && ms.X < this.Window.ClientBounds.Width && ms.Y > 0 && ms.Y < this.Window.ClientBounds.Height)
             {
-                towerManager.Towers.Add(new Sprite(Convert(Convert(new Vector2(ms.X,ms.Y /*+ 130*/))), towerSheet, new Rectangle (0, 0, 64, 64), new Vector2 (0, 0)));
+                Tile tile = map.GetLayer("Level").Tiles[(int)(ms.X / 64), (int)(ms.Y / 64)];
+
+                if (tile.TileIndex != 2 && tile.TileIndex != 4 && tile.TileIndex != 19)
+                    towerManager.Towers.Add(new Sprite(Convert(Convert(new Vector2(ms.X,ms.Y /*+ 130*/))), towerSheet, new Rectangle (0, 0, 64, 64), new Vector2 (0, 0)));
             }
+
+            
+
+
+
+
 
             enemy.Update(gameTime);
 
-
-            //movementManager.CheckDirection(ref enemy);
-
-          
+            movementManager.CheckDirection(ref enemy);
 
             base.Update(gameTime);
         }

@@ -17,8 +17,11 @@ namespace WarShield
 {
     class MovementManager
     {
-        /*public void CheckDirection(ref Sprite enemy)
+        public int HandledBlock = -1;
+
+        public void CheckDirection(ref Sprite enemy)
         {
+
             //figuring when to turn based on calculated sides
             Vector2 temp = enemy.Location;
             if (enemy.direction == Sprite.Direction.Up)
@@ -30,79 +33,79 @@ namespace WarShield
                 temp = new Vector2(enemy.Location.X + 64, enemy.Location.Y);
             }
 
+            int CurrentBlock = Convert(temp);
 
-            foreach (int blocks in enemy.PivotPoints.Keys)
+            if (enemy.PivotPoints.ContainsKey(CurrentBlock) && CurrentBlock != HandledBlock)
             {
-                
-                if (blocks == Convert(temp))
-                {
-                    if (enemy.PivotPoints[blocks] == Sprite.Turn.Left)
+                if (enemy.PivotPoints[CurrentBlock] == Sprite.Turn.Left)
                     {
                         enemy.Rotation -= MathHelper.PiOver2;
                         if(enemy.direction == Sprite.Direction.Up)
                         {
-                            enemy.Velocity = new Vector2(-50, 0);
+                            enemy.Velocity = new Vector2(-64, 0);
                             enemy.direction = Sprite.Direction.Left;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Right)
                         {
-                            enemy.Velocity = new Vector2(0, -50);
+                            enemy.Velocity = new Vector2(0, -64);
                             enemy.direction = Sprite.Direction.Up;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Down)
                         {
-                            enemy.Velocity = new Vector2(50, 0);
+                            enemy.Velocity = new Vector2(64, 0);
                             enemy.direction = Sprite.Direction.Right;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Left)
                         {
-                            enemy.Velocity = new Vector2(0, 50);
+                            enemy.Velocity = new Vector2(0, 64);
                             enemy.direction = Sprite.Direction.Down;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                     }
-                    else if (enemy.PivotPoints[blocks] == Sprite.Turn.Right)
+                else if (enemy.PivotPoints[CurrentBlock] == Sprite.Turn.Right)
                     {
                         enemy.Rotation += MathHelper.PiOver2;
                         if (enemy.direction == Sprite.Direction.Up)
                         {
-                            enemy.Velocity = new Vector2(50, 0);
+                            enemy.Velocity = new Vector2(64, 0);
                             enemy.direction = Sprite.Direction.Right;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Right)
                         {
-                            enemy.Velocity = new Vector2(0, 50);
+                            enemy.Velocity = new Vector2(0, 64);
                             enemy.direction = Sprite.Direction.Down;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Down)
                         {
-                            enemy.Velocity = new Vector2(-50, 0);
+                            enemy.Velocity = new Vector2(-64, 0);
                             enemy.direction = Sprite.Direction.Left;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                         else if (enemy.direction == Sprite.Direction.Left)
                         {
-                            enemy.Velocity = new Vector2(0, -50);
+                            enemy.Velocity = new Vector2(0, -64);
                             enemy.direction = Sprite.Direction.Up;
-                            enemy.Location = Convert(blocks);
-                            enemy.PivotPoints[blocks] = Sprite.Turn.Null;
+                            enemy.Location = Convert(CurrentBlock);
+                            //enemy.PivotPoints[blocks] = Sprite.Turn.Null;
                         }
                     }
-                }
+
+                HandledBlock = CurrentBlock;
             }
-        }*/
+        }
 
 
 
