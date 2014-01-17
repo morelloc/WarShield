@@ -19,6 +19,14 @@ namespace WarShield
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+
+        public enum GameState
+        {
+            Paused,
+
+            Running,
+            GameOver
+        }
         GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
         public Texture2D Spritesheet;
@@ -28,6 +36,14 @@ namespace WarShield
         private static Song menuMusic;
         MovementManager movementManager;
         TowerManager towerManager;
+        TimeManager timeManager;
+
+        int TowerBudget;
+        GameState gameState;
+        bool P_AlreadyPressed;
+        bool StartSequence;
+        int CastleHealth;
+        bool HealthIncrease;
 
         MouseState MouseState;
         MouseState prevMouseState;
@@ -35,7 +51,10 @@ namespace WarShield
         //Enemy Variables
         Texture2D enemySheet;
         Texture2D towerSheet;
-        Sprite enemy;
+        Texture2D bulletSheet;
+        //Sprite enemy;
+
+        List<Sprite> enemy;
         
 
         public Game1()
@@ -60,6 +79,17 @@ namespace WarShield
 
             movementManager = new MovementManager();
             towerManager = new TowerManager();
+            timeManager = new TimeManager();
+            enemy = new List<Sprite>();
+
+            gameState = GameState.Paused;
+            TowerBudget += 5;
+            CastleHealth = 500;
+            P_AlreadyPressed = false;
+            HealthIncrease = false;
+            StartSequence = true;
+
+            
 
             this.IsMouseVisible = true;
 
@@ -76,11 +106,15 @@ namespace WarShield
 
             enemySheet = Content.Load<Texture2D>("Enemies");
             towerSheet = Content.Load<Texture2D>("Towers");
+            bulletSheet = Content.Load<Texture2D>("Bullet");
 
-            enemy = new Sprite(Convert(298),
+
+            
+
+            /*enemy = new Sprite(Convert(298),
                                  enemySheet,
                                  new Rectangle(0, 0, 64, 64),
-                                 new Vector2(0, -64));
+                                 new Vector2(0, -64));*/
         }
 
       
@@ -94,21 +128,48 @@ namespace WarShield
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
             MouseState ms = Mouse.GetState();
             int index = map.TileSheets[0].GetTileIndex(new xTile.Dimensions.Location(ms.X, ms.Y));
             //int index = Convert(new Vector2(ms.X, ms.Y));
 
 
             //check all pivot points for all enemies
-                //change rotationa and velocity if necessary
+                //change rotation and velocity if necessary
 
-            Window.Title = index.ToString();
+            Window.Title = "Castle Health: " + CastleHealth + "   Towers You Can Buy: " + TowerBudget;
+            if (StartSequence)
+            {
+                Window.Title += "       Press P to Start the Wave of Enemies, After every wave of 10, you will get 5 more towers to place";
+            }
+            if (gameState == GameState.GameOver)
+            {
+                Window.Title = "Game Over";
+            }
 
             KeyboardState kb = Keyboard.GetState();
             if (kb.IsKeyDown(Keys.Right))
             {
                 viewport.X += 3;
+            }
+            if (kb.IsKeyDown(Keys.P) && !P_AlreadyPressed)
+            {
+                if (gameState == GameState.Running)
+                {
+                    gameState = GameState.Paused;
+                }
+                else
+                {
+                    if (StartSequence)
+                    {
+                        StartSequence = false;
+                    }
+                    gameState = GameState.Running;
+                }
+                P_AlreadyPressed = true;
+            }
+            if (kb.IsKeyUp(Keys.P))
+            {
+                P_AlreadyPressed = false;
             }
 
            
@@ -120,20 +181,108 @@ namespace WarShield
             {
                 Tile tile = map.GetLayer("Level").Tiles[(int)(ms.X / 64), (int)(ms.Y / 64)];
 
-                if (tile.TileIndex != 2 && tile.TileIndex != 4 && tile.TileIndex != 19)
-                    towerManager.Towers.Add(new Sprite(Convert(Convert(new Vector2(ms.X,ms.Y /*+ 130*/))), towerSheet, new Rectangle (0, 0, 64, 64), new Vector2 (0, 0)));
+                bool CanSpawnTower = true;
+                for (int i = 0; i < towerManager.Towers.Count; i++)
+                {
+                    if (towerManager.Towers[i].IsBoxColliding(new Rectangle(ms.X, ms.Y, 1, 1)))
+                    {
+                        CanSpawnTower = false;
+                    }
+                }
+
+                if (tile.TileIndex != 2 && tile.TileIndex != 4 && tile.TileIndex != 19 && CanSpawnTower && TowerBudget > 0)
+                {
+                    towerManager.Towers.Add(new Sprite(Convert(Convert(new Vector2(ms.X, ms.Y /*+ 130*/))), towerSheet, new Rectangle(0, 0, 64, 64), new Vector2(0, 0)));
+                    TowerBudget--;
+                }
             }
 
-            
 
+            if (gameState == GameState.Running)
+            {
+                if (timeManager.enemyCanSpawn(gameTime, ref TowerBudget, ref HealthIncrease))
+                {
+                    enemy.Add(new Sprite(Convert(298),
+                                     enemySheet,
+                                     new Rectangle(0, 0, 64, 64),
+                                     new Vector2(0, -64)));
+                }
 
+                List<int> EnemiestoDelete = new List<int>();
+                for (int i = 0; i < enemy.Count; i++)
+                {
+                    enemy[i].Update(gameTime);
+                    if (enemy[i].DeleteThisEnemy())
+                    {
+                        EnemiestoDelete.Add(i);
+                    }
+                }
+                for (int i = 0; i < EnemiestoDelete.Count; i++)
+                {
+                    enemy.RemoveAt(EnemiestoDelete[i]);
+                }
 
+                //enemy.Update(gameTime);
+                List<int> EnemiestoRemove = new List<int>();
+                for (int i = 0; i < enemy.Count; i++)
+                {
+                    enemy[i] = movementManager.CheckDirection(enemy[i]);
+                    if (enemy[i].Location.X + 64 < 0)
+                    {
+                        EnemiestoRemove.Add(i);
+                        CastleHealth -= enemy[i].Health;
+                    }
 
+                }
+                for (int i = 0; i < EnemiestoRemove.Count; i++)
+                {
+                    enemy.RemoveAt(EnemiestoRemove[i]);
+                }
 
-            enemy.Update(gameTime);
+                for (int j = 0; j < towerManager.Towers.Count; j++)
+                {
+                    for (int i = 0; i < enemy.Count; i++)
+                    {
+                        Vector2 DistanceBetween = enemy[i].Center - towerManager.Towers[j].Center;
+                        if (Math.Sqrt((DistanceBetween.X * DistanceBetween.X) + (DistanceBetween.Y * DistanceBetween.Y)) < 143)
+                        {
+                            towerManager.Towers[j].TowerInRange = true;
+                            break;
+                        }
+                        else
+                        {
+                            towerManager.Towers[j].TowerInRange = false;
+                        }
+                    }
+                }
+                for (int i = 0; i < towerManager.Towers.Count; i++)
+                {
+                    if (towerManager.Towers[i].towerCanShoot(gameTime) && towerManager.Towers[i].TowerInRange)
+                    {
+                        towerManager.Towers[i].bullets.Add(new Sprite(towerManager.Towers[i].Center - new Vector2(2, 2), bulletSheet, new Rectangle(0, 0, 6, 6), towerManager.VelocityforBullet(i, enemy)));
+                    }
+                    for (int j = 0; j < towerManager.Towers[i].bullets.Count; j++)
+                    {
+                        towerManager.Towers[i].bullets[j].Update(gameTime);
+                        towerManager.CheckifBulletsHitting(ref enemy, ref towerManager.Towers[i].bullets);
+                    }
+                }
 
-            movementManager.CheckDirection(ref enemy);
+                if (CastleHealth <= 0)
+                {
+                    gameState = GameState.GameOver;
+                }
 
+                if (HealthIncrease)
+                {
+                    for (int i = 0; i < enemy.Count; i++)
+                    {
+                        enemy[i].Health += 20;
+                    }
+                    HealthIncrease = false;
+                }
+
+            }
             base.Update(gameTime);
         }
 
@@ -145,11 +294,21 @@ namespace WarShield
 
             map.Draw(xnaDisplayDevice, viewport);
 
-            enemy.Draw(spriteBatch);
+            //enemy.Draw(spriteBatch);
 
             for (int i = 0; i < towerManager.Towers.Count; i++)
             {
                 towerManager.Towers[i].Draw(spriteBatch);
+                for(int j = 0; j < towerManager.Towers[i].bullets.Count; j++)
+                {
+                    towerManager.Towers[i].bullets[j].Draw(spriteBatch);
+                }
+            }
+
+
+            for (int i = 0; i < enemy.Count; i++)
+            {
+                enemy[i].Draw(spriteBatch);
             }
 
 

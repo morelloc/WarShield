@@ -44,11 +44,22 @@ namespace WarShield
             private Color tintColor = Color.White;
             private float rotation = 0.0f;
 
+            public int HandledBlock = -1;
+
+            public int Health = 100;
+
+            public float towerShootInterval = 2f;
+            public float towerShootElapsedTime = 0f;
+
             public int CollisionRadius = 0;
             public int BoundingXPadding = 0;
             public int BoundingYPadding = 0;
 
+            public bool TowerInRange = false;
+
             public object tag;
+
+            public List<Sprite> bullets = new List<Sprite>();
 
 
             protected Vector2 location = Vector2.Zero;
@@ -64,9 +75,6 @@ namespace WarShield
 
             public Dictionary<int, Turn> PivotPoints = new Dictionary<int, Turn>();
         
-
-            
-
 
             public enum Direction
             {
@@ -94,6 +102,28 @@ namespace WarShield
                 tag = null;
                 direction = Direction.Up;
             }
+
+            public bool towerCanShoot(GameTime gameTime)
+            {
+                towerShootElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (towerShootElapsedTime > towerShootInterval)
+                {
+                    towerShootElapsedTime = 0;
+                    return true;
+                }
+                else
+                    return false;
+            }
+
+            public bool DeleteThisEnemy()
+            {
+                if (Health <= 0)
+                    return true;
+                else
+                    return false;
+            }
+
 
             public void LoadPivotPoints()
             {
@@ -196,9 +226,26 @@ namespace WarShield
                 }
             }
 
+            public Rectangle EnemyBoundingBox
+            {
+                get
+                {
+                    return new Rectangle(
+                        (int)location.X + 20,
+                        (int)location.Y + 20,
+                        24,
+                        24);
+                }
+            }
+
             public bool IsBoxColliding(Rectangle OtherBox)
             {
                 return BoundingBoxRect.Intersects(OtherBox);
+            }
+
+            public bool IsEnemyBoxColliding(Rectangle OtherBox)
+            {
+                return EnemyBoundingBox.Intersects(OtherBox);
             }
 
             public bool IsCircleColliding(Vector2 otherCenter, float otherRadius)
@@ -226,6 +273,7 @@ namespace WarShield
                     currentFrame = (currentFrame + 1) % (frames.Count);
                     timeForCurrentFrame = 0.0f;
                 }
+
 
                 location += (velocity * elapsed);
             }

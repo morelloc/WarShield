@@ -17,11 +17,8 @@ namespace WarShield
 {
     class MovementManager
     {
-        public int HandledBlock = -1;
-
-        public void CheckDirection(ref Sprite enemy)
+        public Sprite CheckDirection(Sprite enemy)
         {
-
             //figuring when to turn based on calculated sides
             Vector2 temp = enemy.Location;
             if (enemy.direction == Sprite.Direction.Up)
@@ -35,7 +32,7 @@ namespace WarShield
 
             int CurrentBlock = Convert(temp);
 
-            if (enemy.PivotPoints.ContainsKey(CurrentBlock) && CurrentBlock != HandledBlock)
+            if (enemy.PivotPoints.ContainsKey(CurrentBlock) && CurrentBlock != enemy.HandledBlock)
             {
                 if (enemy.PivotPoints[CurrentBlock] == Sprite.Turn.Left)
                     {
@@ -103,8 +100,9 @@ namespace WarShield
                         }
                     }
 
-                HandledBlock = CurrentBlock;
+                enemy.HandledBlock = CurrentBlock;
             }
+            return enemy;
         }
 
 
