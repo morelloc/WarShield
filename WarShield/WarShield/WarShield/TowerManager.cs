@@ -60,6 +60,7 @@ namespace WarShield
                     {
                         Enemies[i].Health -= 20;
                         BulletstoDelete.Add(j);
+                        
                     }
                 }
             }

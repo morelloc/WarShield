@@ -35,9 +35,9 @@ namespace WarShield
                 enemySpawnElapsedTime = 0;
                 return true;
             }
-            if (SpawnCount  % 20 == 0)
+            if (SpawnCount  % 20 == 10)
             {
-                CastleBudget += 5;
+                CastleBudget += 1;
                 SpawnCount = 0;
             }
             /*if (SpawnCount == 10)
